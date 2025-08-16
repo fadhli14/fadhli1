@@ -16,12 +16,14 @@ pipeline {
         stage('Remove Load Balancer State') {
             steps {
                 script {
-                    // Check if the state file exists before trying to remove resources from it
-                    // The '|| true' ensures the pipeline doesn't fail if the resource isn't in the state.
-                    dir('infra') {
-                        sh 'terraform state rm module.alb.aws_lb.dev_proj_1_alb || true'
-                        sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_listner || true'
-                        sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_https_listner || true'
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]) {
+                        // Check if the state file exists before trying to remove resources from it
+                        // The '|| true' ensures the pipeline doesn't fail if the resource isn't in the state.
+                        dir('infra') {
+                            sh 'terraform state rm module.alb.aws_lb.dev_proj_1_alb || true'
+                            sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_listner || true'
+                            sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_https_listner || true'
+                        }
                     }
                 }
             }
@@ -30,10 +32,12 @@ pipeline {
         // Stage to initialize Terraform in the 'infra' directory
         stage('Terraform Init') {
             steps {
-                // Ensure to run in the 'infra' directory where your .tf files are located
-                dir('infra') {
-                    sh 'echo "=================Terraform Init=================="'
-                    sh 'terraform init'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]) {
+                    // Ensure to run in the 'infra' directory where your .tf files are located
+                    dir('infra') {
+                        sh 'echo "=================Terraform Init=================="'
+                        sh 'terraform init'
+                    }
                 }
             }
         }
@@ -44,9 +48,11 @@ pipeline {
                 expression { return params.PLAN_TERRAFORM }
             }
             steps {
-                dir('infra') {
-                    sh 'echo "=================Terraform Plan=================="'
-                    sh 'terraform plan'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]) {
+                    dir('infra') {
+                        sh 'echo "=================Terraform Plan=================="'
+                        sh 'terraform plan'
+                    }
                 }
             }
         }
@@ -57,9 +63,11 @@ pipeline {
                 expression { return params.APPLY_TERRAFORM }
             }
             steps {
-                dir('infra') {
-                    sh 'echo "=================Terraform Apply=================="'
-                    sh 'terraform apply -auto-approve'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]) {
+                    dir('infra') {
+                        sh 'echo "=================Terraform Apply=================="'
+                        sh 'terraform apply -auto-approve'
+                    }
                 }
             }
         }
@@ -70,9 +78,11 @@ pipeline {
                 expression { return params.DESTROY_TERRAFORM }
             }
             steps {
-                dir('infra') {
-                    sh 'echo "=================Terraform Destroy=================="'
-                    sh 'terraform destroy -auto-approve'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]) {
+                    dir('infra') {
+                        sh 'echo "=================Terraform Destroy=================="'
+                        sh 'terraform destroy -auto-approve'
+                    }
                 }
             }
         }
