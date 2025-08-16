@@ -14,8 +14,8 @@ pipeline {
                 deleteDir()
 
                 // Clone the Git repository
-                git branch: 'master',
-                    url: 'https://github.com/fadhli14/fadhli.git'
+                git branch: 'main',
+                    url: 'https://github.com/fadhli14/fadhli1.git'
 
                 sh "ls -lart"
             }
