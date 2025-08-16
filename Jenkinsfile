@@ -20,6 +20,7 @@ pipeline {
                         // Check if the state file exists before trying to remove resources from it
                         // The '|| true' ensures the pipeline doesn't fail if the resource isn't in the state.
                         dir('infra') {
+                            sh 'terraform init'
                             sh 'terraform state rm module.alb.aws_lb.dev_proj_1_alb || true'
                             sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_listner || true'
                             sh 'terraform state rm module.alb.aws_lb_listener.dev_proj_1_lb_https_listner || true'
