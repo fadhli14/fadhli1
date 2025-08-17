@@ -19,6 +19,9 @@ output "public_subnet_cidr_block" {
 # Setup VPC
 resource "aws_vpc" "dev_proj_1_vpc_eu_central_1" {
   cidr_block = var.vpc_cidr
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  
   tags = {
     Name = var.vpc_name
   }
